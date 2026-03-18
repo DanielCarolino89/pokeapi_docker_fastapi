@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex FastAPI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Pokédex com FastAPI + Docker</h1>
+
+        <div class="search-box">
+            <input type="text" id="pokemonInput" placeholder="Digite o nome do Pokémon">
+            <button onclick="buscarPokemon()">Buscar</button>
+        </div>
+
+        <div id="pokemonCard" class="card hidden"></div>
+
+        <h2>Pokémons iniciais</h2>
+        <div id="pokemonList" class="list"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

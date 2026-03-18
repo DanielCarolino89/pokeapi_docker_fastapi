@@ -1,0 +1,13 @@
+pokemon-fastapi-docker/
+│
+├── app/
+│   ├── main.py
+│   ├── static/
+│   │   ├── style.css
+│   │   └── script.js
+│   └── templates/
+│       └── index.html
+│
+├── requirements.txt
+├── Dockerfile
+└── .dockerignore
