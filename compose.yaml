@@ -1,0 +1,41 @@
+services: # Define todos os serviços da aplicação
+  web: # Serviço da sua API FastAPI
+    build: . # Constrói a imagem usando o Dockerfile da pasta atual
+
+    ports:
+      - "8000:8000" # Porta do PC -> porta do container
+
+    volumes:
+      - .:/app # Sincroniza arquivos (útil para desenvolvimento)
+
+    depends_on:
+      - db # Garante que o banco suba antes da API
+
+    command: > # Comando executado ao iniciar o container
+      sh -c "
+      pip install --upgrade pip &&
+      pip install --no-cache-dir -r requirements.txt &&
+      alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+    # Atualiza o pip
+    # Instala dependências
+    # Inicia o FastAPI com reload automático
+
+  db: # Serviço do banco de dados PostgreSQL
+    image: postgres:15 # Usa imagem oficial do PostgreSQL
+
+    environment:
+      POSTGRES_DB: meu_banco # Nome do banco (criado automaticamente)
+      POSTGRES_USER: daniel_carolino # Usuário do banco
+      POSTGRES_PASSWORD: Programador060989! # Senha do banco
+
+    ports:
+      - "5432:5432" # Porta padrão do PostgreSQL
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistência dos dados
+
+volumes:
+  postgres_data: # Volume para não perder dados ao parar o container
