@@ -13,6 +13,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 # Configura a pasta de templates HTML (Jinja2)
 templates = Jinja2Templates(directory="app/templates")
 
+
 # URL base da API pública de Pokémon
 POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon"
 
@@ -20,9 +21,7 @@ POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon"
 # Rota principal (renderiza a página HTML)
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse(
-        "index.html", {"request": request}  # obrigatório para o Jinja2
-    )
+    return templates.TemplateResponse(name="index.html", context={"request": request})
 
 
 # Rota para buscar um Pokémon específico pelo nome
@@ -51,7 +50,7 @@ async def get_pokemon(name: str):
             "weight": data["weight"],  # Peso
         }
 
-        return pokemon  # Retorna JSON
+        return pokemon  # Retorna JSON com os dados do Pokémon
 
 
 # Rota para listar vários Pokémons
