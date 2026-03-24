@@ -10,12 +10,6 @@ help:
 	@echo "  down   - Para e remove os containers"
 	@echo "  ps     - Lista os containers em execução"
 	@echo "  logs   - Exibe os logs dos containers"
-	@echo "  status - Mostra o status do git"
-	@echo "  add    - Adiciona arquivos ao stage"
-	@echo "  commit - Cria um commit (msg='mensagem')"
-	@echo "  push   - Envia alterações para o repositório remoto"
-	@echo "  pull   - Atualiza o repositório local"
-	@echo "  loggit - Mostra histórico de commits"
 
 sync:
 	uv sync --all-groups --all-extras
@@ -40,25 +34,3 @@ ps:
 
 logs:
 	docker-compose logs -f
-
-# -------------------------
-# GIT
-# -------------------------
-
-status:
-	git status
-
-add:
-	git add .
-
-commit:
-	git commit -m "$(msg)"
-
-push:
-	git push
-
-pull:
-	git pull --rebase
-
-loggit:
-	git log --oneline --graph --decorate
