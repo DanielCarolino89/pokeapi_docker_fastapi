@@ -19,6 +19,8 @@ services: # Define todos os serviços da aplicação
       uv sync --all-groups &&
       uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
       "
+    networks:
+      - pokeapi_network # Conecta à rede personalizada
 
     # Atualiza o pip
     # Instala dependências
@@ -31,6 +33,11 @@ services: # Define todos os serviços da aplicação
       - .env # Carrega variáveis de ambiente do arquivo db.env
     ports:
       - "5432:5432" # Porta padrão do PostgreSQL
-
+    networks:
+      - pokeapi_network # Conecta à rede personalizada
 volumes:
   db_data: # Volume para não perder dados ao parar o container
+
+networks:
+  pokeapi_network: # Rede personalizada para comunicação entre serviços
+    driver: bridge
