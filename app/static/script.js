@@ -50,4 +50,4 @@ async function buscarPokemon(nomePokemon = null) {
     card.classList.remove("hidden");
     card.innerHTML = `<p>Erro ao buscar Pokémon.</p>`;
   }
-
+}
