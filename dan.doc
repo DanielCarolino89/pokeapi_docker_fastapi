@@ -1,0 +1,22 @@
+    try:
+        with get_sync_session() as session:
+            existing_pokemon = (
+                session.query(Pokemon).filter_by(name=pokemon["name"]).first()
+            )
+
+            if not existing_pokemon:
+                new_pokemon = Pokemon(
+                    name=pokemon["name"],
+                    types=", ".join(pokemon["types"]),
+                    height=pokemon["height"],
+                    weight=pokemon["weight"],
+                )
+                session.add(new_pokemon)
+                session.commit()
+
+        return pokemon
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500, content={"error": f"Erro ao salvar no banco: {str(e)}"}
+        )

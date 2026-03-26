@@ -23,7 +23,8 @@ class Pokemon(Base):
         nullable=True,
         doc="Name of the Pokémon.",
     )
-    type: Mapped[str | None] = mapped_column(
+
+    types: Mapped[str | None] = mapped_column(
         String(50),
         default=None,
         nullable=True,

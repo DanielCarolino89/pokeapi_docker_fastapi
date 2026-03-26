@@ -35,6 +35,11 @@ async def home(request: Request):
     return templates.TemplateResponse(name="index.html", context={"request": request})
 
 
+@app.get("/crud", response_class=HTMLResponse)
+async def crud(request: Request):
+    return templates.TemplateResponse(name="crud.html", context={"request": request})
+
+
 def request_pokemon_data(name: str) -> dict | None:
     """Fetch Pokémon data from the PokeAPI.
 
@@ -51,57 +56,53 @@ def request_pokemon_data(name: str) -> dict | None:
     return response.json()
 
 
-# Rota para buscar um Pokémon específico pelo nome
-@app.get("/api/pokemon/{name}", response_model=PokemonOutput)
+@app.get("/api/pokemon/{name}")
 async def get_pokemon(name: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{POKEAPI_URL}/{name.lower()}")
+
+        if response.status_code != 200:
+            return JSONResponse(
+                status_code=404, content={"error": "Pokémon não encontrado"}
+            )
+
+        data = response.json()
+
+        pokemon = {
+            "name": data["name"].capitalize(),
+            "image": data["sprites"]["front_default"],
+            "types": [t["type"]["name"] for t in data["types"]],
+            "height": data["height"],
+            "weight": data["weight"],
+        }
+
     try:
         with get_sync_session() as session:
-            # Verifica se o Pokémon já existe no banco de dados
             existing_pokemon = (
-                session.query(Pokemon).filter_by(name=name.capitalize()).first()
+                session.query(Pokemon).filter_by(name=pokemon["name"]).first()
             )
-            logging.info(f"Pokémon encontrado no banco: {existing_pokemon}")
-            if existing_pokemon:
-                return PokemonOutput(
-                    id=existing_pokemon.id,
-                    name=existing_pokemon.name,
-                    type=existing_pokemon.type,
-                    height=existing_pokemon.height,
-                    weight=existing_pokemon.weight,
+
+            if not existing_pokemon:
+                new_pokemon = Pokemon(
+                    name=pokemon["name"],
+                    type=", ".join(pokemon["types"]),
+                    height=pokemon["height"],
+                    weight=pokemon["weight"],
                 )
+                session.add(new_pokemon)
+                session.commit()
 
-            data = request_pokemon_data(name)
-            if not data:
-                return JSONResponse(
-                    status_code=404, content={"error": "Pokémon not found"}
-                )
+        return pokemon
 
-            # Insert do pokemon no banco
-            pokemon = Pokemon()
-            pokemon.name = data["name"].capitalize()
-            pokemon.type = data["types"][0]["type"]["name"]
-            pokemon.height = data["height"]
-            pokemon.weight = data["weight"]
-
-            session.add(pokemon)
-            session.commit()
-            session.refresh(pokemon)
-
-            return PokemonOutput(
-                id=pokemon.id,
-                name=pokemon.name,
-                type=pokemon.type,
-                height=pokemon.height,
-                weight=pokemon.weight,
-            )
     except Exception as e:
-        logging.error(f"Erro ao processar Pokémon {name}: {e}", exc_info=True)
-        return JSONResponse(status_code=500, content={"error": "Internal Server Error"})
+        return JSONResponse(
+            status_code=500, content={"error": f"Erro ao salvar no banco: {str(e)}"}
+        )
 
 
 # Rota para listar vários Pokémons
 @app.get("/api/pokemons")
-async def list_pokemons(limit: int = 12):
+async def list_pokemons(limit: int = 32):
     # Cria cliente HTTP assíncrono
     async with httpx.AsyncClient() as client:
         # Busca lista de Pokémons com limite

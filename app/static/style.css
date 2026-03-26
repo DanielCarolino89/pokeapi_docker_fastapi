@@ -95,7 +95,7 @@ button:hover {
     transform: scale(1.1);
 }
 
-.card h3{
+.card h3 {
     font-size: 24px;
 }
 
@@ -129,4 +129,26 @@ button:hover {
     /* Sombra leve */
     text-transform: capitalize;
     /* Primeira letra maiúscula */
+    font-weight: bold;
+    /* Negrito */
+}
+
+.links button {
+    background: blue;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.links button:hover {
+    background: darkblue;
+}
+
+.links a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
 }
