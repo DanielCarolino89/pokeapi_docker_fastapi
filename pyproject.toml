@@ -16,4 +16,5 @@ dependencies = [
     "fastapi-pagination>=0.12",
     "fastapi-filters>=0.3",
     "requests>=2.32.5",
+    "uvicorn[standard]>=0.29,<0.31",
 ]

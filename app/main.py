@@ -2,10 +2,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import httpx
+
 from .database import get_sync_session, engine, Base
 from .models import Pokemon
-from .base_models import PokemonOutput
+
+import httpx
 import logging
 import requests
 
